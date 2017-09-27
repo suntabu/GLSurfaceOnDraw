@@ -45,7 +45,7 @@ public class DisappearingDoodleView extends View {
             mPaint = new Paint();
             mPaint.setARGB(255, 255, 0, 0);
             mPaint.setAntiAlias(true);
-            mPaint.setStrokeWidth(0);
+            mPaint.setStrokeWidth(1);
 //            mPaint.setStyle(Paint.Style.STROKE);//设置为空心
             mPaint.setStrokeCap(Paint.Cap.BUTT);
             mPaint.setStyle(Paint.Style.FILL);
@@ -157,40 +157,21 @@ public class DisappearingDoodleView extends View {
 
         public boolean updatePathPoints() {
             float distance = mPathWidth / 2;
+            float dx = 0, dy = 0;
+            PointF leftTop, leftBottom, rightBottom, rightTop;
 
+            PointF direction = new PointF(mEndX - mStartX, mEndY - mStartY);
+            direction.x = direction.x / direction.length();
+            direction.y = direction.y / direction.length();
+            PointF directionV = new PointF(direction.y, -direction.x);
 
-            if (Math.abs(mEndX - mStartX) < 1) {
-                mPoints[0].x = mStartX + distance;
-                mPoints[0].y = mStartY - distance;
-                mPoints[1].x = mStartX - distance;
-                mPoints[1].y = mPoints[0].y;
-                mPoints[2].x = mPoints[1].x;
-                mPoints[2].y = mEndY + distance;
-                mPoints[3].x = mPoints[0].x;
-                mPoints[3].y = mPoints[2].y;
-            } else if (Math.abs(mEndY - mStartY) < 1) {
-                mPoints[0].x = mStartX - distance;
-                mPoints[0].y = mStartY - distance;
-                mPoints[1].x = mPoints[0].x;
-                mPoints[1].y = mStartY + distance;
-                mPoints[2].x = mEndX + distance;
-                mPoints[2].y = mPoints[1].y;
-                mPoints[3].x = mPoints[2].x;
-                mPoints[3].y = mPoints[0].y;
-            } else {
+            dx = distance * directionV.x;
+            dy = distance * directionV.y;
+            leftTop = new PointF(mEndX + dx, mEndY + dy);
+            rightTop = new PointF(mEndX - dx, mEndY - dy);
+            leftBottom = new PointF(mStartX + dx, mStartY + dy);
+            rightBottom = new PointF(mStartX - dx, mStartY - dy);
 
-                PointF direction = new PointF(mEndX - mStartX, mEndY - mStartY);
-                direction.x = direction.x / direction.length();
-                direction.y = direction.y / direction.length();
-                PointF directionV = new PointF(direction.y, -direction.x);
-
-                float dx = distance * directionV.x;
-                float dy = distance * directionV.y;
-
-                PointF leftTop = new PointF(mEndX + dx, mEndY + dy);
-                PointF rightTop = new PointF(mEndX - dx, mEndY - dy);
-                PointF leftBottom = new PointF(mStartX + dx, mStartY + dy);
-                PointF rightBottom = new PointF(mStartX - dx, mStartY - dy);
 //            Log.d(TAG, "V: " + new PointF(leftTop.x - rightTop.x, leftTop.y - rightTop.y).length());
 //            mPoints[0] = leftTop;
 //            mPoints[1] = leftBottom;
@@ -198,70 +179,10 @@ public class DisappearingDoodleView extends View {
 //            mPoints[3] = rightTop;
 
 
-                mPoints[0] = leftTop;
-                mPoints[1] = rightTop;
-                mPoints[2] = rightBottom;
-                mPoints[3] = leftBottom;
-                return true;
-
-
-//                //point-k formula
-//                //y= kx + b
-//                float kLine = (mEndY - mStartY) / (mEndX - mStartX);
-//                float kVertLine = -1 / kLine;
-//                float b = mStartY - (kVertLine * mStartX);
-//                if (!caculatePoints(kVertLine, b, mStartX, mStartY, distance, mPoints[0], mPoints[1])) {
-//                    String info = String.format(TAG, "startPt, criterion < 0, (%.2f, %.2f)-->(%.2f, %.2f), kLine - %.2f, kVertLine - %.2f, b - %.2f",
-//                            mStartX, mStartY, mEndX, mEndY, kLine, kVertLine, b);
-//                    Log.i(TAG, info);
-//                    return false;
-//                }
-//                b = mEndY - (kVertLine * mEndX);
-//                if (!caculatePoints(kVertLine, b, mEndX, mEndY, distance, mPoints[2], mPoints[3])) {
-//                    String info = String.format(TAG, "endPt, criterion < 0, (%.2f, %.2f)-->(%.2f, %.2f), kLine - %.2f, kVertLine - %.2f, b - %.2f",
-//                            mStartX, mStartY, mEndX, mEndY, kLine, kVertLine, b);
-//                    Log.i(TAG, info);
-//                    return false;
-//                }
-
-                //TODO: use other ways to reorder unti-clockwise points
-//                reorderUntiClockwise(mPoints);
-                //reorder points to unti-clockwise
-//                if (mStartX < mEndX) {
-//                    if (mStartY < mEndY) {
-//                        if (mPoints[0].x < mPoints[1].x) {
-//                            swapPoint(mPoints[0], mPoints[1]);
-//                        }
-//                        if (mPoints[2].x > mPoints[3].x) {
-//                            swapPoint(mPoints[2], mPoints[3]);
-//                        }
-//                    } else {
-//                        if (mPoints[0].x > mPoints[1].x) {
-//                            swapPoint(mPoints[0], mPoints[1]);
-//                        }
-//                        if (mPoints[2].x < mPoints[3].x) {
-//                            swapPoint(mPoints[2], mPoints[3]);
-//                        }
-//                    }
-//                } else {
-//                    if (mStartY < mEndY) {
-//                        if (mPoints[0].x < mPoints[1].x) {
-//                            swapPoint(mPoints[0], mPoints[1]);
-//                        }
-//                        if (mPoints[2].x > mPoints[3].x) {
-//                            swapPoint(mPoints[2], mPoints[3]);
-//                        }
-//                    } else {
-//                        if (mPoints[0].x > mPoints[1].x) {
-//                            swapPoint(mPoints[0], mPoints[1]);
-//                        }
-//                        if (mPoints[2].x < mPoints[3].x) {
-//                            swapPoint(mPoints[2], mPoints[3]);
-//                        }
-//                    }
-//                }
-            }
-
+            mPoints[0] = leftTop;
+            mPoints[1] = rightTop;
+            mPoints[2] = rightBottom;
+            mPoints[3] = leftBottom;
             return true;
         }
 
@@ -308,7 +229,7 @@ public class DisappearingDoodleView extends View {
     private int mWidth = 0;
     private int mHeight = 0;
     private long mElapsed = 0;
-    private float mStrokeWidth = 60;
+    private float mStrokeWidth = 20;
     private float mCircleRadius = 10;
     private Handler mHandler = new Handler() {
         @Override
