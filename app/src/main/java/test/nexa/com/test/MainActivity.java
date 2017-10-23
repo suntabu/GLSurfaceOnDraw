@@ -10,10 +10,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context = this;
-//        GLCubeView gcv = new GLCubeView(context);
-//        setContentView(gcv);
+        GLCubeView gcv = new GLCubeView(context);
+        setContentView(gcv);
 
 
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
     }
 }
