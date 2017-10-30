@@ -57,11 +57,17 @@ public class GLCubeView extends GLSurfaceView {
     private Paint mPaint;
 
     public void onDraw(final Canvas canvas) {
-        mCanvas = canvas;
         super.onDraw(canvas);
-        canvas.drawRect(10, 10, 100, 100, new Paint());
-        drawNomal(canvas);
-        drawTest(canvas);
+        canvas.translate(500,100);
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        p.setTextSize(50);
+        CharSequence lable = "^";
+        canvas.drawText(lable,0,lable.length(),0,0, p);
+        canvas.translate(-200,-100);
+//        canvas.drawRect(10, 10, 100, 100, new Paint());
+//        drawNomal(canvas);
+//        drawTest(canvas);
         //drawDial(canvas);
 
     }
@@ -117,7 +123,8 @@ public class GLCubeView extends GLSurfaceView {
         path.close();
         mPaint.setTextSize(46);
         canvas.drawPath(path, mPaint);
-        canvas.drawTextOnPath("7qiuwoeruowoqjifasdkfjksjfiojio23ur8950", path, -20, -20, mPaint);
+        canvas.drawTextOnPath("^", path, -20, -20, mPaint);
+//        canvas.drawText("^",0,1,0,0, mPaint);
         //三角形
         path.moveTo(10, 330);
         path.lineTo(70, 330);
